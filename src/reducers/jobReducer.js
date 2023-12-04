@@ -1,8 +1,19 @@
 import { actions } from "../constants";
 import {v4 as uuid} from 'uuid';
 
+let initialState = {
+    id: "",
+    position: "" ,
+    company: "",
+    salary: 0,
+    category: "",
+    jobType: "",
+    location: "",
+    url: "",
+    desc: ""
+}
 
-export const jobReducer = (state, action) => {
+export const jobReducer = (state = initialState, action) => {
     const {type, payload} = action
 
     switch(type){
@@ -21,5 +32,7 @@ export const jobReducer = (state, action) => {
                 url: payload.url,
                 desc: payload.desc
             }
+        
+        default: return state
     }
 }
