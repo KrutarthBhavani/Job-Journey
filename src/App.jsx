@@ -14,6 +14,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import { Container } from '@mui/material';
 
 //Mui Icons
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -23,11 +24,12 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import TuneIcon from '@mui/icons-material/Tune';
 
 //Importing all Pages
-import {DashBoardPage}  from './components/DashboardPage';
+import {DashboardPage}  from './components/DashboardPage';
 import {StatisticsPage} from './components/StatisticsPage';
 import {ContactsPage} from './components/ContactsPage';
 import {DocumentsPage} from './components/DocumentsPage'
 import {SettingsPage} from './components/SettingsPage'
+
 
 const drawerWidth = 200
 const dashboard = 'Dashboard'
@@ -119,15 +121,15 @@ function App() {
         </Box>
       </Drawer>
 
-      <Box sx={{marginTop: "50px", marginX: "20px"}}>
+      <Container fixed disableGutters sx={{marginTop: "55px"}}>
         <Routes>
-          <Route path={"/"} element={<DashBoardPage/>} />
+          <Route path={"/"} element={<DashboardPage/>} />
           <Route path={"/statistics"} element={<StatisticsPage/>} />
           <Route path={"/contacts"} element={<ContactsPage/>} />
           <Route path={"/documents"} element={<DocumentsPage/>} />
           <Route path={"/settings"} element={<SettingsPage/>} />
         </Routes>
-      </Box>
+      </Container>
 
     </Box>
   )
