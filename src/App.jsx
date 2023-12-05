@@ -1,6 +1,7 @@
-// React and Router hooks
+// React, Redux and Router hooks
 import { useState } from 'react'
 import {Routes, Route, NavLink, Link} from 'react-router-dom'
+import { useSelector } from 'react-redux';
 
 //Mui Components
 import Box from '@mui/material/Box';
@@ -39,6 +40,9 @@ const documents = 'Documents'
 const settings = 'Settings'
 
 function App() {
+
+  let boardName = useSelector((state) => state.board_name)
+
   return(
     <Box sx={{display: 'flex'}}>
       <CssBaseline/>
@@ -51,7 +55,7 @@ function App() {
           </Typography>
 
           <Typography sx={{flexGrow: 5}} variant="h5" color="inherit">
-              Job Hunt 2023
+            {boardName}
           </Typography>
 
           <Typography variant='h7' >
@@ -121,7 +125,7 @@ function App() {
         </Box>
       </Drawer>
 
-      <Container fixed disableGutters sx={{marginTop: "55px"}}>
+      <Container maxWidth="xl" disableGutters sx={{marginTop: "60px", marginX: '10px'}}>
         <Routes>
           <Route path={"/"} element={<DashboardPage/>} />
           <Route path={"/statistics"} element={<StatisticsPage/>} />

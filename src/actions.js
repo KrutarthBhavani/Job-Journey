@@ -23,4 +23,9 @@ const addJob = (
     }
 })
 
-export {addJob}
+const setBoardName = (newBoardName) => ({
+    type: actions.set_board_name,
+    payload: {board_name: newBoardName}
+})
+
+export {addJob, setBoardName}

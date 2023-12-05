@@ -5,7 +5,8 @@ export{
 }
 
 const actions = {
-    add_job: 'ADD_JOB'
+    add_job: 'ADD_JOB',
+    set_board_name: 'SET_BOARD_NAME'
 }
 
 const categories = [
