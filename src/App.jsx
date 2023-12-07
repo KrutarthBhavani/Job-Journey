@@ -125,7 +125,7 @@ function App() {
         </Box>
       </Drawer>
 
-      <Container maxWidth="xl" disableGutters sx={{marginTop: "60px", marginX: '10px'}}>
+      <Container maxWidth="xl" disableGutters sx={{marginTop: "60px", marginX: '10px', overflow: 'hidden'}}>
         <Routes>
           <Route path={"/"} element={<DashboardPage/>} />
           <Route path={"/statistics"} element={<StatisticsPage/>} />
