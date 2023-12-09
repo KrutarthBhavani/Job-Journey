@@ -17,6 +17,7 @@ import {
 
 //Component imports
 import CategoryContainer from "./CategoryContainer";
+import AddJobDialog from "./AddJobDialog";
 import { getJobData } from "./randomJob";
 import { categories } from "../../constants";
 import { createPortal } from "react-dom";
@@ -52,8 +53,9 @@ export const KanbanDashboard = () => {
     useEffect(() => {
         if(newJob.id){
             console.log(newJob)
-            let job = {id: newJob.id, company: newJob.company, position: newJob.position, category: newJob.category}
-            setJobs([...jobs, job])
+            setJobs([...jobs, newJob])
+            if(filteredJobs.length) 
+                setFilteredJobs([])
             dispatch(
                 doneAddJob()
             )    
