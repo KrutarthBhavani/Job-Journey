@@ -9,6 +9,10 @@ import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 // Mui imports
 import {
     Box,
+    Button,
+    TextField,
+    Divider,
+    Container
 } from '@mui/material'
 
 //Component imports
@@ -20,6 +24,27 @@ import JobCard from "./JobCard";
 import { doneAddJob, doneEditJob } from "../../actions";
 
 export const KanbanDashboard = () => {
+
+    const [openDialog, setOpenDialog] = useState(false);
+
+    const handleAddJobClick = () => {
+        setOpenDialog(true);
+    };
+
+    const onDialogClosed = () =>{
+        setOpenDialog(false)
+    }
+
+    const [filteredJobs, setFilteredJobs] = useState([])
+
+    function onFilterCompany(text){
+        if(text.length){
+            const pattern = new RegExp(text, "i")
+            setFilteredJobs(jobs.filter(job => job.company.match(pattern)))
+        }else{
+            setFilteredJobs([])
+        }
+    }
 
     const dispatch = useDispatch()
     const newJob = useSelector(state => state.new_job)
@@ -52,11 +77,26 @@ export const KanbanDashboard = () => {
             else jobs.splice(jobIndex, 1, editedJob)
 
             setJobs([...jobs])
+
+            if(filteredJobs.length){
+                const jobIndex = filteredJobs.findIndex(job => job.id === editedJob.id)
+                if(jobIndex == -1){
+                    console.log("ERROR: Cannot Edit Job with id " + editedJob.id)
+                }
+
+                if(editedJob.delete){
+                    filteredJobs.splice(jobIndex, 1)   
+                }
+                else filteredJobs.splice(jobIndex, 1, editedJob)
+
+                setFilteredJobs([...filteredJobs])
+            }
+
             dispatch(
                 doneEditJob()
             )
         }
-    })
+    }, [editedJob])
 
     const [jobs, setJobs] = useState(getJobData(30))
 
@@ -155,31 +195,58 @@ export const KanbanDashboard = () => {
     }
 
     return (
-        <DndContext
-            sensors={sensors}
-            onDragStart={handleDragStart}
-            onDragOver={handleOnDragOver}
-            onDragEnd={handleDragEnd}
-            collisionDetection={rectIntersection}>
-            <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', height: '85vh'}}>
-                <SortableContext items={columns}>
-                    {columns.map((category, index) => (
-                        <CategoryContainer key={index} category={category} allJobs={jobs}/>
-                    ))}
-                </SortableContext>
+        <Box>
+
+            <Box display="flex" justifyContent="space-between" sx={{marginBottom: "10px"}}>
+                <Button variant="contained" color="primary" size="small" onClick={handleAddJobClick}>
+                    Add Job
+                </Button>
+                
+                <Box display="flex" alignItems="center">
+                    <TextField name="filterByCompany" variant="outlined" size="small" placeholder="Filter Company"
+                        inputProps={{
+                            style:{
+                                padding: "5px",
+                            }
+                        }}
+                        sx={{marginRight: "10px"}}
+                        onChange={e => onFilterCompany(e.target.value)}/>
+
+                    <Button variant="outlined" size="small">Sort By Created Date</Button>
+                </Box>
+
+                {openDialog && <AddJobDialog onCloseCallback={onDialogClosed} />}
             </Box>
 
-            {createPortal(
-                <DragOverlay>
-                    {activeColumnName && 
-                        <CategoryContainer category={activeColumnName} allJobs={jobs}/>
-                    }
-                    {activeCardData &&
-                        <JobCard id={activeCardData.id} position={activeCardData.position} company={activeCardData.company} category={activeCardData.category}/>
-                    }
-                </DragOverlay>,
-                document.body
-            )}
-        </DndContext>
+            <Divider />
+            <Container maxWidth="xl" disableGutters sx={{overflow: 'scroll'}}>
+                    <DndContext
+                        sensors={sensors}
+                        onDragStart={handleDragStart}
+                        onDragOver={handleOnDragOver}
+                        onDragEnd={handleDragEnd}
+                        collisionDetection={rectIntersection}>
+                        <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', height: '85vh'}}>
+                            <SortableContext items={columns}>
+                                {columns.map((category, index) => (
+                                    <CategoryContainer key={index} category={category} allJobs={filteredJobs.length? filteredJobs: jobs}/>
+                                ))}
+                            </SortableContext>
+                        </Box>
+
+                        {createPortal(
+                            <DragOverlay>
+                                {activeColumnName && 
+                                    <CategoryContainer category={activeColumnName} allJobs={filteredJobs.length? filteredJobs: jobs}/>
+                                }
+                                {activeCardData &&
+                                    <JobCard jobData={activeCardData}/>
+                                }
+                            </DragOverlay>,
+                            document.body
+                        )}
+                    </DndContext>
+                </Container>
+        </Box>
     )
 }
