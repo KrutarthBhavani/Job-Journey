@@ -219,14 +219,14 @@ export const KanbanDashboard = () => {
             </Box>
 
             <Divider />
-            <Container maxWidth="xl" disableGutters sx={{overflow: 'scroll'}}>
+            <Container maxWidth={false} disableGutters sx={{overflow: 'scroll'}}>
                     <DndContext
                         sensors={sensors}
                         onDragStart={handleDragStart}
                         onDragOver={handleOnDragOver}
                         onDragEnd={handleDragEnd}
                         collisionDetection={rectIntersection}>
-                        <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', height: '85vh'}}>
+                        <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', height: '85vh'}}>
                             <SortableContext items={columns}>
                                 {columns.map((category, index) => (
                                     <CategoryContainer key={index} category={category} allJobs={filteredJobs.length? filteredJobs: jobs}/>

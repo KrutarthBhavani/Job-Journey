@@ -38,8 +38,8 @@ const CategoryContainer = ({ category, allJobs }) => {
   }
 
   return (
-    <Box ref={setNodeRef} style={style} sx={{display: 'flex', width: '300px', color: 'black'}}>
-      <Card {...attributes} {...listeners} variant='outlined' sx={{width: '300px', marginX: '10px', marginY: '10px', borderRadius: '10px', overflow:'scroll'}}>
+    <Box ref={setNodeRef} style={style} sx={{display: 'flex', width: '100%', minWidth: '320px', color: 'black'}}>
+      <Card {...attributes} {...listeners} variant='outlined' sx={{width: '100%', minWidth: '300px', marginX: '10px', marginY: '10px', borderRadius: '10px', overflow:'scroll'}}>
         <Box
           boxShadow={3}
           margin={1}
