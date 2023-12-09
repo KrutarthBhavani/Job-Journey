@@ -13,16 +13,15 @@ let initialState = {
     desc: ""
 }
 
-export const jobReducer = (state = initialState, action) => {
+export const editJobReducer = (state = initialState, action) => {
     const {type, payload} = action
 
     switch(type){
-        case actions.add_job:
+        case actions.edit_job:
             console.log('payload', JSON.stringify(payload))
-            console.log('state', JSON.stringify(state))
 
             return {
-                id: uuid(),
+                id: payload.id,
                 position: payload.position,
                 company: payload.company,
                 salary: payload.salary,
@@ -30,8 +29,20 @@ export const jobReducer = (state = initialState, action) => {
                 jobType: payload.jobType,
                 location: payload.location,
                 url: payload.url,
-                desc: payload.desc
+                desc: payload.desc,
             }
+
+        case actions.delete_job:
+            console.log('payload', JSON.stringify(payload))
+
+            return {
+                id: payload.id,
+                delete: true
+            }
+
+
+        case actions.done_edit_job:
+            return initialState
         
         default: return state
     }

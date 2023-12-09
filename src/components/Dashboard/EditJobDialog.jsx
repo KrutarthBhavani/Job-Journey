@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addJob } from "../../actions";
+import { editJob, deleteJob } from "../../actions";
 import { categories, job_type } from "../../constants";
 import {
     Box,
@@ -17,16 +17,17 @@ import {
 } from "@mui/material";
 
 
-const AddJobDialog = ({onCloseCallback, forCategory}) => {
+const EditJobDialog = ({jobData, onCloseCallback}) => {
     const dispatch = useDispatch();
-    const [company, setCompany] = useState("");
-    const [position, setPosition] = useState("");
-    const [salary, setSalary] = useState("");
-    const [category, setCategory] = useState(forCategory? forCategory: categories[0]);
-    const [jobType, setJobType] = useState(job_type[0])
-    const [location, setLocation] = useState("")
-    const [url, setURL] = useState("")
-    const [desc, setDesc] = useState("")
+    const id = jobData.id
+    const [company, setCompany] = useState(jobData.company? jobData.company : "");
+    const [position, setPosition] = useState(jobData.category? jobData.position : "");
+    const [salary, setSalary] = useState(jobData.salary? jobData.salary : "");
+    const [category, setCategory] = useState(jobData.category? jobData.category : categories[0]);
+    const [jobType, setJobType] = useState(jobData.jobType? jobData.jobType : job_type[0])
+    const [location, setLocation] = useState(jobData.location? jobData.location : "")
+    const [url, setURL] = useState(jobData.url? jobData.url : "")
+    const [desc, setDesc] = useState(jobData.desc? jobData.desc: "")
     const [open, setOpen] = useState(true);
 
     const handleClose = () => {
@@ -36,7 +37,8 @@ const AddJobDialog = ({onCloseCallback, forCategory}) => {
 
     const handleSave = () => {
         dispatch(
-            addJob(
+            editJob(
+                id,
                 position, 
                 company,
                 salary,
@@ -48,6 +50,13 @@ const AddJobDialog = ({onCloseCallback, forCategory}) => {
         );
         handleClose();
     };
+
+    const handleDelete = () => {
+        dispatch(
+            deleteJob(id)
+        )
+        handleClose()
+    }
 
     return (
         <Dialog maxWidth="md" fullWidth={true} open={open} onClose={handleClose}>
@@ -151,14 +160,14 @@ const AddJobDialog = ({onCloseCallback, forCategory}) => {
                 </Container>
 
             </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
+            <DialogActions sx={{display:'flex', justifyContent: 'flex-end'}}>
+                <Button onClick={handleDelete} variant='contained' color='error'>Delete</Button>
                 <Button onClick={handleSave} variant="contained" color="primary">
-                    Save
+                    Save & Close
                 </Button>
             </DialogActions>
         </Dialog>
     );
 };
 
-export default AddJobDialog;
+export default EditJobDialog;

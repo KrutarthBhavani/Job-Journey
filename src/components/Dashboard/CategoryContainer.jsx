@@ -3,6 +3,7 @@ import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Box, Card, Divider, Icon, Typography} from '@mui/material';
 import JobCard from './JobCard';
+import AddJobCard from './AddJobCard';
 
 const CategoryContainer = ({ category, allJobs }) => {
 
@@ -53,8 +54,9 @@ const CategoryContainer = ({ category, allJobs }) => {
           <SortableContext
           items={jobIds}>
             {jobs.map(job => (
-              <JobCard id={job.id} position={job.position} company={job.company} category={job.category}/>
+              <JobCard jobData={job}/>
               ))}
+              <AddJobCard category={category}/>
           </SortableContext>
         </Box>
       </Card>

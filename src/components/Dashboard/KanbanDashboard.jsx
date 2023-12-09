@@ -1,6 +1,6 @@
 //Importing React, Redux hooks
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch} from "react-redux";
 
 //Dnd kit imports
 import { DndContext, DragOverlay, PointerSensor, closestCorners, rectIntersection, useSensor, useSensors } from "@dnd-kit/core";
@@ -17,8 +17,46 @@ import { getJobData } from "./randomJob";
 import { categories } from "../../constants";
 import { createPortal } from "react-dom";
 import JobCard from "./JobCard";
+import { doneAddJob, doneEditJob } from "../../actions";
 
 export const KanbanDashboard = () => {
+
+    const dispatch = useDispatch()
+    const newJob = useSelector(state => state.new_job)
+
+    useEffect(() => {
+        if(newJob.id){
+            console.log(newJob)
+            let job = {id: newJob.id, company: newJob.company, position: newJob.position, category: newJob.category}
+            setJobs([...jobs, job])
+            dispatch(
+                doneAddJob()
+            )    
+        }
+    }, [newJob])
+
+    const editedJob = useSelector(state => state.edited_job)
+    useEffect(() => {
+        if(editedJob.id){
+            console.log(editedJob)
+
+            const jobIndex = jobs.findIndex(job => job.id === editedJob.id)
+            if(jobIndex == -1){
+                console.log("ERROR: Cannot Edit Job with id " + editedJob.id)
+            }
+
+            // For Deletion
+            if(editedJob.delete){
+                jobs.splice(jobIndex, 1)   
+            }
+            else jobs.splice(jobIndex, 1, editedJob)
+
+            setJobs([...jobs])
+            dispatch(
+                doneEditJob()
+            )
+        }
+    })
 
     const [jobs, setJobs] = useState(getJobData(30))
 

@@ -1,9 +1,25 @@
-import React from 'react';
+import {React, useMemo, useState} from 'react';
 import { Card, CardActionArea, CardContent, Typography,  } from '@mui/material';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import EditJobDialog from './EditJobDialog';
 
-const JobCard = ({id, position, company, category}) => {
+const JobCard = ({jobData}) => {
+
+  //Change this later if location is to be shown
+  const {id, company, position, category} = useMemo(() => {
+      return {id: jobData.id, company: jobData.company, position: jobData.position, category: jobData.category}
+  }, [jobData])
+
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleEditJobClick = () => {
+      setOpenDialog(true);
+  };
+
+  const onDialogClosed = () =>{
+      setOpenDialog(false)
+  }
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({
     id: id,
@@ -37,12 +53,13 @@ const JobCard = ({id, position, company, category}) => {
       {...listeners}
       sx={{marginBottom: '10px', marginX: '5px'}}
     >
-      {/* <CardActionArea> */}
+      <CardActionArea onClick={handleEditJobClick} >
         <CardContent sx={{display: 'flex', flexDirection:'column'}}>
           <Typography variant='subtitle2' fontWeight='bold' sx={{width: '100%', boxSizing: 'border-box'}}>{company}</Typography>
           <Typography variant='subtitle1' sx={{width: '100%', boxSizing: 'border-box'}}>{position}</Typography>
         </CardContent>
-      {/* </CardActionArea> */}
+      </CardActionArea>
+      {openDialog && <EditJobDialog jobData={jobData} onCloseCallback={onDialogClosed}/>}
     </Card>
   );
 };
