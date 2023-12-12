@@ -1,0 +1,38 @@
+import React, {useState, useEffect} from 'react';
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
+import { Backdrop, CircularProgress } from '@mui/material';
+
+export const AuthContext = React.createContext();
+
+export const AuthProvider = ({children}) => {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const auth = getAuth();
+  useEffect(() => {
+    let myListener = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      console.log('onAuthStateChanged', user);
+      setLoadingUser(false);
+    });
+    return () => {
+      if (myListener) myListener();
+    };
+  }, []);
+
+  if (loadingUser) {
+    return (
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loadingUser}
+      >
+        <CircularProgress color="primary" />
+      </Backdrop>
+    );
+  }
+
+  return (
+    <AuthContext.Provider value={{currentUser}}>
+      {children}
+    </AuthContext.Provider>
+  );
+};

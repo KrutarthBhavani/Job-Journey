@@ -8,6 +8,11 @@ import {Provider} from 'react-redux'
 import {store, persistor} from './store.js'
 import { PersistGate } from 'redux-persist/integration/react'
 
+import fbconfig from './firebase/FirebaseConfig';
+import {initializeApp} from 'firebase/app';
+
+const app = initializeApp(fbconfig);
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>

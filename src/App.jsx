@@ -31,111 +31,61 @@ import {ContactsPage} from './components/ContactsPage';
 import {DocumentsPage} from './components/DocumentsPage'
 import {SettingsPage} from './components/SettingsPage'
 
-
-const drawerWidth = 200
-const dashboard = 'Dashboard'
-const statistics = 'Statistics'
-const contacts = 'Contacts'
-const documents = 'Documents'
-const settings = 'Settings'
-
+import {AuthProvider} from './context/AuthContext'
+import { HomePage } from './components/HomePage';
+import { Navigation } from './components/Navigation';
+import {PrivateRoute} from './components/PrivateRoute'
+import SignUpPage from './components/SignUpPage';
+import SignInPage from './components/SignInPage';
+import { PublicRoute } from './components/PublicRoute';
 function App() {
 
-  let boardName = useSelector((state) => state.board_name)
-
   return(
-    <Box sx={{display: 'flex'}}>
-      <CssBaseline/>
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+    <AuthProvider>
 
-        <Toolbar variant="dense" sx={{display:'flex', flexDirection: 'row'}}>
-          
-          <Typography sx={{ width: 200}} variant="h6" color="inherit">
-            Job Journey
-          </Typography>
+      <Box sx={{display: 'flex'}}>
 
-          <Typography sx={{flexGrow: 5}} variant="h5" color="inherit">
-            {boardName}
-          </Typography>
+        <Navigation/>
 
-          <Typography variant='h7' >
-            Jay Talekar
-          </Typography>
-          
-        </Toolbar>
-      </AppBar>
-      
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
-        }}
-      >
-        <Toolbar />
-        <Box sx={{ overflow: 'auto' }}>
-          <List>
-            <ListItem key={dashboard} disablePadding>
-              <ListItemButton component={NavLink} to={"/"}>
-                <ListItemIcon>
-                    <DashboardIcon/>
-                </ListItemIcon>
-                <ListItemText primary={dashboard}/>
-              </ListItemButton>
-            </ListItem>
+        <Container maxWidth={false} disableGutters sx={{marginTop: "60px", marginX: '10px', overflow: 'hidden'}}>
+          <Routes>
+            {/*Public Routes */}
+            <Route path='/' element={<PublicRoute/>}>
+              <Route path="/" element={<HomePage/>}/>
+            </Route>
 
-            <ListItem key={statistics} disablePadding>
-              <ListItemButton component={NavLink} to={"/statistics"}>
-                <ListItemIcon>
-                    <AnalyticsIcon/>
-                </ListItemIcon>
-                <ListItemText primary={statistics}/>
-              </ListItemButton>
-            </ListItem>
-            
-            <ListItem key={contacts} disablePadding>
-              <ListItemButton component={NavLink} to={"/contacts"}>
-                <ListItemIcon>
-                    <ContactsIcon/>
-                </ListItemIcon>
-                <ListItemText primary={contacts}/>
-              </ListItemButton>
-            </ListItem>
+            <Route path='/signin' element={<PublicRoute/>}>
+              <Route path='/signin' element={<SignInPage />} />
+            </Route>
 
-            <ListItem key={documents} disablePadding>
-              <ListItemButton component={NavLink} to={"/documents"}>
-                <ListItemIcon>
-                    <InsertDriveFileIcon/>
-                </ListItemIcon>
-                <ListItemText primary={documents}/>
-              </ListItemButton>
-            </ListItem>
+            <Route path='/signup' element={<PublicRoute/>}>
+              <Route path='/signup' element={<SignUpPage />} />
+            </Route>
 
-            <ListItem key={settings} disablePadding>
-              <ListItemButton component={NavLink} to={"/settings"}>
-                <ListItemIcon>
-                    <TuneIcon/>
-                </ListItemIcon>
-                <ListItemText primary={settings}/>
-              </ListItemButton>
-            </ListItem>
+            {/*Protected Routes*/}
+            <Route path="/dashboard" element={<PrivateRoute />}>
+              <Route path={"/dashboard"} element={<DashboardPage/>} />
+            </Route>
 
-          </List>
-        </Box>
-      </Drawer>
+            <Route path="/statistics" element={<PrivateRoute />}>
+              <Route path={"/statistics"} element={<StatisticsPage/>} />
+            </Route>
 
-      <Container maxWidth={false} disableGutters sx={{marginTop: "60px", marginX: '10px', overflow: 'hidden'}}>
-        <Routes>
-          <Route path={"/"} element={<DashboardPage/>} />
-          <Route path={"/statistics"} element={<StatisticsPage/>} />
-          <Route path={"/contacts"} element={<ContactsPage/>} />
-          <Route path={"/documents"} element={<DocumentsPage/>} />
-          <Route path={"/settings"} element={<SettingsPage/>} />
-        </Routes>
-      </Container>
+            <Route path="/contacts" element={<PrivateRoute />}>
+              <Route path={"/contacts"} element={<ContactsPage/>} />
+            </Route>
 
-    </Box>
+            <Route path="/documents" element={<PrivateRoute />}>
+              <Route path={"/documents"} element={<DocumentsPage/>} />
+            </Route>
+
+            <Route path="/settings" element={<PrivateRoute />}>
+              <Route path={"/settings"} element={<SettingsPage/>} />
+            </Route>
+          </Routes>
+        </Container>
+      </Box>
+    </AuthProvider>
   )
 }
 
