@@ -27,6 +27,8 @@ const SignUpPage = () => {
     } catch (e) {
       if(e.code == "auth/invalid-credential")
         setError("Invalid Login Credentials")
+      if(e.code == "auth/email-already-in-use")
+        setError("Email Already in use!")
       else setError(e.message)
     }
   };

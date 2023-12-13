@@ -1,8 +1,9 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { doSignOut } from "../firebase/FirebaseFunctions";
+import { setUserDetails, setupDashboard } from "../firebase/FirestoreFunctions"
 
 //Mui components
 import { 
@@ -32,6 +33,7 @@ import ContactsIcon from '@mui/icons-material/Contacts';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import TuneIcon from '@mui/icons-material/Tune';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { getAuth } from "firebase/auth";
 
 const drawerWidth = 200
 const dashboard = 'Dashboard'
@@ -49,9 +51,29 @@ export function Navigation() {
 
 const NavigateAuth = ({user}) => {
 
+    async function setupUser(){
+        if(user){
+            if(user.metadata.createdAt === user.metadata.lastLoginAt){
+                const dashboardResult = await setupDashboard(user.uid)
+
+                if(!user.displayName)
+                    user.displayName = getAuth().currentUser.displayName
+                    
+                const userResult = await setUserDetails(user.uid, user.displayName, user.email)
+                if(dashboardResult && userResult) user.metadata.lastLoginAt = new Date().getTime()
+            }
+        }
+    }
+
+    useEffect(() => {
+        setupUser()
+
+        return () => {
+            console.log('User Setup Successfull!');
+        }
+    }, [])
+
     let boardName = useSelector((state) => state.board_name)
-    let displayName = user.displayName
-    let email = user.email
 
     const [anchorEl, setAnchorEl] = useState(null)
     const open = Boolean(anchorEl)
@@ -89,7 +111,7 @@ const NavigateAuth = ({user}) => {
                         onClick={e => onOpenPopover(e)}>
                         <AccountCircleIcon/>
                         <Typography variant='h7'marginLeft={'5px'} >
-                            {displayName}
+                            {user.displayName}
                         </Typography>
                     </Button>
 
@@ -109,8 +131,8 @@ const NavigateAuth = ({user}) => {
                                 <CardContent sx={{paddingBottom: '0px', paddingTop: '10px'}}>
                                     <Typography variant="h5" sx={{ paddingBottom: '0px'}}>Account</Typography>
                                     <Divider/>
-                                    <Typography variant="subtitle1" marginTop={'10px'}>You are logged in as <b>{displayName}</b></Typography>
-                                    <Typography variant="subtitle1" marginBottom={'10px'}>Email: <b>{email}</b></Typography>
+                                    <Typography variant="subtitle1" marginTop={'10px'}>You are logged in as <b>{user.displayName}</b></Typography>
+                                    <Typography variant="subtitle1" marginBottom={'10px'}>Email: <b>{user.email}</b></Typography>
                                     <Divider/>
                                 </CardContent>
                                 <CardActions sx={{display: 'flex', justifyContent: 'flex-end', paddingX: '16px', paddingBottom: '10px'}}>

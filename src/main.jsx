@@ -10,8 +10,10 @@ import { PersistGate } from 'redux-persist/integration/react'
 
 import fbconfig from './firebase/FirebaseConfig';
 import {initializeApp} from 'firebase/app';
+import { getFirestore } from "firebase/firestore";
 
 const app = initializeApp(fbconfig);
+export const db = getFirestore(app)
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>

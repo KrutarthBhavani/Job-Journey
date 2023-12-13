@@ -9,13 +9,15 @@ import {
     GoogleAuthProvider,
     sendPasswordResetEmail,
     EmailAuthProvider,
-    reauthenticateWithCredential
+    reauthenticateWithCredential,
   } from 'firebase/auth';
   
   async function doCreateUserWithEmailAndPassword(email, password, displayName) {
     const auth = getAuth();
     await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(auth.currentUser, {displayName: displayName});
+    await updateProfile(auth.currentUser, {displayName: displayName}).then(() => {
+      auth.currentUser.reload().then(() => console.log("Display Name Updated!"))
+    })
   }
   
   async function doChangePassword(email, oldPassword, newPassword) {

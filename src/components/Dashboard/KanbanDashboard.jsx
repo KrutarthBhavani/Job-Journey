@@ -1,5 +1,5 @@
 //Importing React, Redux hooks
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSelector, useDispatch} from "react-redux";
 
 //Dnd kit imports
@@ -19,12 +19,39 @@ import {
 import CategoryContainer from "./CategoryContainer";
 import AddJobDialog from "./AddJobDialog";
 import { getJobData } from "./randomJob";
-import { categories } from "../../constants";
 import { createPortal } from "react-dom";
 import JobCard from "./JobCard";
-import { doneAddJob, doneEditJob } from "../../actions";
+
+import { doneAddJob, doneEditJob, setBoardName } from "../../actions";
+import { addJob, updateJob, getDashboardData, updateCategoryPosition } from "../../firebase/FirestoreFunctions";
+import { AuthContext } from "../../context/AuthContext";
 
 export const KanbanDashboard = () => {
+
+    const {currentUser} = useContext(AuthContext)
+    const dispatch = useDispatch()
+
+    const [jobs, setJobs] = useState([])
+    const [categories, setCategories] = useState([])
+
+    async function initializeJobs(){
+        const dashboardData = await getDashboardData(currentUser.uid)
+
+        if(dashboardData){
+            const {name, categories, jobs: allJobs} = dashboardData
+            setCategories([...categories])
+            setJobs([...allJobs])
+            dispatch(
+                setBoardName(name)
+            )
+        }else{
+            //TODO: Handle if dashboard data is not fetched
+        }
+    }
+
+    useEffect(() => {
+        initializeJobs()
+    }, [])
 
     const [openDialog, setOpenDialog] = useState(false);
 
@@ -47,62 +74,77 @@ export const KanbanDashboard = () => {
         }
     }
 
-    const dispatch = useDispatch()
     const newJob = useSelector(state => state.new_job)
 
     useEffect(() => {
+        addNewJob()
+    }, [newJob])
+
+    const addNewJob = async () => {
         if(newJob.id){
             console.log(newJob)
-            setJobs([...jobs, newJob])
-            if(filteredJobs.length) 
-                setFilteredJobs([])
-            dispatch(
-                doneAddJob()
-            )    
+            const insertResult = await addJob(currentUser.uid, newJob)
+
+            if(insertResult){
+                setJobs([...jobs, newJob])
+                if(filteredJobs.length) 
+                    setFilteredJobs([])
+                dispatch(
+                    doneAddJob()
+                )
+            }else{
+                //TODO: Show error 
+            }
         }
-    }, [newJob])
+    }
 
     const editedJob = useSelector(state => state.edited_job)
     useEffect(() => {
+        editJob()
+    }, [editedJob])
+
+    async function editJob(){
         if(editedJob.id){
             console.log(editedJob)
 
-            const jobIndex = jobs.findIndex(job => job.id === editedJob.id)
-            if(jobIndex == -1){
-                console.log("ERROR: Cannot Edit Job with id " + editedJob.id)
-            }
+            const updateResult = await updateJob(currentUser.uid, editedJob)
 
-            // For Deletion
-            if(editedJob.delete){
-                jobs.splice(jobIndex, 1)   
-            }
-            else jobs.splice(jobIndex, 1, editedJob)
-
-            setJobs([...jobs])
-
-            if(filteredJobs.length){
-                const jobIndex = filteredJobs.findIndex(job => job.id === editedJob.id)
+            if(updateResult){
+                const jobIndex = jobs.findIndex(job => job.id === editedJob.id)
                 if(jobIndex == -1){
                     console.log("ERROR: Cannot Edit Job with id " + editedJob.id)
                 }
-
+    
+                // For Deletion
                 if(editedJob.delete){
-                    filteredJobs.splice(jobIndex, 1)   
+                    jobs.splice(jobIndex, 1)   
                 }
-                else filteredJobs.splice(jobIndex, 1, editedJob)
-
-                setFilteredJobs([...filteredJobs])
+                else jobs.splice(jobIndex, 1, editedJob)
+    
+                setJobs([...jobs])
+    
+                if(filteredJobs.length){
+                    const jobIndex = filteredJobs.findIndex(job => job.id === editedJob.id)
+                    if(jobIndex == -1){
+                        console.log("ERROR: Cannot Edit Job with id " + editedJob.id)
+                    }
+    
+                    if(editedJob.delete){
+                        filteredJobs.splice(jobIndex, 1)   
+                    }
+                    else filteredJobs.splice(jobIndex, 1, editedJob)
+    
+                    setFilteredJobs([...filteredJobs])
+                }
+    
+                dispatch(
+                    doneEditJob()
+                )
+            }else{
+                //TODO: Show error 
             }
-
-            dispatch(
-                doneEditJob()
-            )
         }
-    }, [editedJob])
-
-    const [jobs, setJobs] = useState(getJobData(30))
-
-    const [columns, setColumns] = useState(categories)
+    }
 
     const [activeColumnName, setActiveColumnName] = useState("")
     const [activeCardData, setActiveCardData] = useState("")
@@ -171,29 +213,32 @@ export const KanbanDashboard = () => {
         }
     }
 
-    function handleDragEnd(event){
+    async function handleDragEnd(event){
         setActiveColumnName("")
         setActiveCardData("")
-
+        
         const {active, over} = event
         if(!over) return;
-
+        
+        const isActiveCard = active.data.current?.type === "job"
+        
+        if(isActiveCard){
+            const updatedJob = jobs.find(job => job.id == active.id)
+            if(updatedJob){
+                await updateJob(currentUser.uid, updatedJob)
+            }
+        }
+        
         const activeColumn = active.id
         const overColumn = over.id
 
         if(activeColumn === overColumn) return
 
-        setColumns((col) => {
-            const activeColumnIndex = col.findIndex(
-                c => c === activeColumn
-            )
-            const overColumnIndex = col.findIndex(
-                c => c === overColumn
-            )
-
-            return arrayMove(columns, activeColumnIndex, overColumnIndex)
-        })
-
+        const activeColIndex = categories.findIndex(c => c === activeColumn)
+        const overColIndex = categories.findIndex(c => c === overColumn)
+        
+        setCategories(arrayMove(categories, activeColIndex, overColIndex))
+        await updateCategoryPosition(currentUser.uid, [...categories], activeColIndex, overColIndex)
     }
 
     return (
@@ -229,8 +274,8 @@ export const KanbanDashboard = () => {
                         onDragEnd={handleDragEnd}
                         collisionDetection={rectIntersection}>
                         <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', height: '85vh'}}>
-                            <SortableContext items={columns}>
-                                {columns.map((category, index) => (
+                            <SortableContext items={categories}>
+                                {categories.map((category, index) => (
                                     <CategoryContainer key={index} category={category} allJobs={filteredJobs.length? filteredJobs: jobs}/>
                                 ))}
                             </SortableContext>
