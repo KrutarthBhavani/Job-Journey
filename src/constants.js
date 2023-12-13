@@ -5,6 +5,8 @@ export{
 }
 
 const actions = {
+    set_jobs: "SET_JOBS",
+    set_categories: "SET_CATEGORIES",
     add_job: 'ADD_JOB',
     done_add_job: 'DONE_ADD_JOB',
     edit_job: 'EDIT_JOB',

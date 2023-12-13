@@ -34,6 +34,7 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import TuneIcon from '@mui/icons-material/Tune';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { getAuth } from "firebase/auth";
+import { persistor } from "../store";
 
 const drawerWidth = 200
 const dashboard = 'Dashboard'
@@ -88,6 +89,7 @@ const NavigateAuth = ({user}) => {
 
     function onClickLogout(){
         setAnchorEl(null)
+        persistor.purge()
         doSignOut()
     }
     

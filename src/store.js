@@ -7,7 +7,8 @@ import thunk from 'redux-thunk';
 
 const persistConfig = {
     key: 'root',
-    storage
+    storage,
+    // blacklist: ['jobs', ['categories']]
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

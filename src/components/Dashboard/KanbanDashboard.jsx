@@ -22,7 +22,7 @@ import { getJobData } from "./randomJob";
 import { createPortal } from "react-dom";
 import JobCard from "./JobCard";
 
-import { doneAddJob, doneEditJob, setBoardName } from "../../actions";
+import { doneAddJob, doneEditJob, setBoardName, persistJobs, persistCategories } from "../../actions";
 import { addJob, updateJob, getDashboardData, updateCategoryPosition } from "../../firebase/FirestoreFunctions";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -31,10 +31,30 @@ export const KanbanDashboard = () => {
     const {currentUser} = useContext(AuthContext)
     const dispatch = useDispatch()
 
+    const persistedJobs = useSelector(state => state.jobs)
+    const persistedCategories = useSelector(state => state.categories)
     const [jobs, setJobs] = useState([])
     const [categories, setCategories] = useState([])
 
+    useEffect(() => {
+        dispatch(
+            persistJobs(jobs)
+        )
+    }, [jobs])
+
+    useEffect(() => {
+        dispatch(
+            persistCategories(categories)
+        )
+    }, [categories])
+
     async function initializeJobs(){
+        if(persistedCategories.length != 0 && persistJobs.length != 0){
+            setCategories(persistedCategories)
+            setJobs(persistedJobs)
+            return
+        }
+
         const dashboardData = await getDashboardData(currentUser.uid)
 
         if(dashboardData){

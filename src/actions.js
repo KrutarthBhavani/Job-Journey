@@ -68,4 +68,14 @@ const setBoardName = (newBoardName) => ({
     payload: {board_name: newBoardName}
 })
 
-export {addJob, doneAddJob, editJob, deleteJob, doneEditJob, setBoardName}
+const persistJobs = (jobs) => ({
+    type: actions.set_jobs,
+    payload: {jobs: jobs}
+})
+
+const persistCategories = (categories) => ({
+    type: actions.set_categories,
+    payload: {categories: categories}
+})
+
+export {addJob, doneAddJob, editJob, deleteJob, doneEditJob, setBoardName, persistJobs, persistCategories}
