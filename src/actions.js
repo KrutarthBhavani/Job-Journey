@@ -28,29 +28,9 @@ const doneAddJob = () => ({
     payload: {}
 })
 
-const editJob = (
-    id,
-    position, 
-    company,
-    salary,
-    category,
-    jobType,
-    location,
-    url,
-    desc
-    ) => ({
+const editJob = (jobData) => ({
     type: actions.edit_job,
-    payload: {
-        id: id,
-        position: position,
-        company: company,
-        salary: salary,
-        category: category,
-        jobType: jobType,
-        location: location,
-        url: url,
-        desc: desc
-    }
+    payload: {jobData: jobData}
 })
 
 const deleteJob = (id) => ({

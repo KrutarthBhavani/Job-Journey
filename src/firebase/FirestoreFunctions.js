@@ -70,7 +70,16 @@ export async function updateJob(uid, jobData){
 
         if(jobData.delete){
             jobs.splice(jobIndex, 1)
-        }else jobs.splice(jobIndex, 1, jobData)
+        }else {
+            if(jobs[jobIndex].category != jobData.category){
+                jobData.updates = [...jobData.updates, {
+                    category: jobData.category,
+                    timeStamp: new Date().getTime()
+                }]
+            }
+
+            jobs.splice(jobIndex, 1, jobData)
+        }
 
         await updateDoc(dashboardRef, {
             "jobs": jobs

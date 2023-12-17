@@ -20,17 +20,7 @@ export const editJobReducer = (state = initialState, action) => {
         case actions.edit_job:
             console.log('payload', JSON.stringify(payload))
 
-            return {
-                id: payload.id,
-                position: payload.position,
-                company: payload.company,
-                salary: payload.salary,
-                category: payload.category,
-                jobType: payload.jobType,
-                location: payload.location,
-                url: payload.url,
-                desc: payload.desc,
-            }
+            return payload.jobData
 
         case actions.delete_job:
             console.log('payload', JSON.stringify(payload))

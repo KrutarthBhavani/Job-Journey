@@ -32,21 +32,22 @@ const EditJobDialog = ({jobData, onCloseCallback}) => {
 
     const handleClose = () => {
         setOpen(false);
+        console.log(jobData)
         onCloseCallback()
     };
 
     const handleSave = () => {
+        jobData.company = company
+        jobData.position = position
+        jobData.salary = salary
+        jobData.category = category
+        jobData.jobType = jobType
+        jobData.location = location
+        jobData.url = url
+        jobData.desc = desc
+
         dispatch(
-            editJob(
-                id,
-                position, 
-                company,
-                salary,
-                category,
-                jobType,
-                location,
-                url,
-                desc)
+            editJob(jobData)
         );
         handleClose();
     };

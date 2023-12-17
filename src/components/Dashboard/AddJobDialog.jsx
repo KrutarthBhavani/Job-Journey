@@ -50,7 +50,7 @@ const AddJobDialog = ({onCloseCallback, forCategory}) => {
     };
 
     return (
-        <Dialog maxWidth="md" fullWidth={true} open={open} onClose={handleClose}>
+        <Dialog maxWidth="md" fullWidth={true} open={open}>
             <DialogTitle>Create a New Job</DialogTitle>
             <DialogContent>
                 <Container fixed disableGutters sx={{display:'flex', flexDirection: 'column'}}>

@@ -30,7 +30,10 @@ export const addJobReducer = (state = initialState, action) => {
                 jobType: payload.jobType,
                 location: payload.location,
                 url: payload.url,
-                desc: payload.desc
+                desc: payload.desc,
+                created_on: new Date().getTime(),
+                created_category: payload.category,
+                updates: []
             }
 
         case actions.done_add_job:
