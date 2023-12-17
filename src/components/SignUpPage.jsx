@@ -90,8 +90,10 @@ const SignUpPage = () => {
 
           <Divider/>
 
-          <Box display={'flex'} justifyContent={'center'} marginTop={'15px'}>
-            <img margin='0px' src={googleSignUp} alt="Continue with Google" onClick={e => handleGoogleSignUp()} />
+          <Box display={'flex'} justifyContent={'center'}>
+            <Button variant='text' sx={{display: 'flex', marginTop: '15px', padding: '0px'}}>
+              <img margin='0px' src={googleSignUp} alt="Continue with Google" onClick={e => handleGoogleSignUp()} />
+            </Button>
           </Box>
 
           {error &&

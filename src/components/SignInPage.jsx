@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { TextField, Button, Box, Typography, Divider } from '@mui/material';
 import googleSignIn from '../assets/continue_with_google.svg'
 import {doSignInWithEmailAndPassword, doGoogleSignIn} from '../firebase/FirebaseFunctions.js'
@@ -58,14 +59,22 @@ const SignInPage = () => {
             type='password'
             onChange={e => setPassword(e.target.value.trim())}/>
 
-          <Button fullWidth variant="outlined" color="primary" sx={{marginBottom: '15px'}} onClick={e => handleSignIn()}>
+          <Button fullWidth variant="outlined" color="primary" sx={{marginBottom: '10px'}} onClick={e => handleSignIn()}>
               Login
           </Button>
 
+          <Link to='/forgot_password'>
+            <Button fullWidth disableRipple sx={{marginBottom: '10px', textDecoration: 'underline'}}>
+              Forgot Password? Click here
+            </Button>
+          </Link>
+
           <Divider/>
 
-          <Box display={'flex'} justifyContent={'center'} marginTop={'15px'}>
-            <img margin='0px' src={googleSignIn} alt="Continue with Google" onClick={e => handleGoogleSignIn()} />
+          <Box display={'flex'} justifyContent={'center'}>
+            <Button variant='text' sx={{display: 'flex', marginTop: '15px', padding: '0px'}}>
+              <img margin='0px' src={googleSignIn} alt="Continue with Google" onClick={e => handleGoogleSignIn()} />
+            </Button>
           </Box>
 
 
