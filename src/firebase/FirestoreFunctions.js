@@ -41,6 +41,21 @@ export async function setUserDetails(uid, name, email){
     }
 }
 
+export async function addAllJobs(uid, jobs){
+    try{
+        const dashboardRef = doc(db, dashboard_coll, uid)
+        await updateDoc(dashboardRef, {
+            "jobs": jobs
+        })
+
+        console.log("All Jobs added");
+        return true
+    }catch(e){
+        console.error("Error add all Jobs", e);
+        return false
+    }
+}
+
 
 export async function addJob(uid, jobData){
     try{

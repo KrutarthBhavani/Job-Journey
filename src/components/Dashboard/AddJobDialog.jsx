@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { addJob } from "../../actions";
 import { categories, job_type } from "../../constants";
@@ -50,7 +50,7 @@ const AddJobDialog = ({onCloseCallback, forCategory}) => {
     };
 
     return (
-        <Dialog maxWidth="md" fullWidth={true} open={open}>
+        <Dialog  key={"add_job_dialog"} maxWidth="md" fullWidth={true} open={open}>
             <DialogTitle>Create a New Job</DialogTitle>
             <DialogContent>
                 <Container fixed disableGutters sx={{display:'flex', flexDirection: 'column'}}>

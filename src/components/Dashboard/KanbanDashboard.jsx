@@ -23,10 +23,19 @@ import { createPortal } from "react-dom";
 import JobCard from "./JobCard";
 
 import { doneAddJob, doneEditJob, setBoardName, persistJobs, persistCategories } from "../../actions";
-import { addJob, updateJob, getDashboardData, updateCategoryPosition } from "../../firebase/FirestoreFunctions";
+import { addAllJobs ,addJob, updateJob, getDashboardData, updateCategoryPosition } from "../../firebase/FirestoreFunctions";
 import { AuthContext } from "../../context/AuthContext";
 
 export const KanbanDashboard = () => {
+
+    // const addRandomJobs = async () => {
+    //     const jobs = getJobData(50)
+    //     await addAllJobs(currentUser.uid, jobs)
+    // }
+
+    // useEffect(() => {
+    //     addRandomJobs()
+    // })
 
     const {currentUser} = useContext(AuthContext)
     const dispatch = useDispatch()
