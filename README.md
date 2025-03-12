@@ -3,7 +3,8 @@
 #### Plan, Track, Achieve!
 #### Your career journey, mapped and mastered. With our intuitive tracking, turn every application into a stepping stone towards success.
 
-![Screenshot](/public/screenshot.png)
+<img width="1440" alt="job journey" src="https://github.com/user-attachments/assets/ac67007a-7dac-4774-b455-cc8ef057f556" />
+
 
 #### Check out this application here
 http://job-journey.us-east-2.elasticbeanstalk.com/
