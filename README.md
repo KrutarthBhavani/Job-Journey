@@ -10,7 +10,7 @@
 https://job-journey.netlify.app/
 
 #### Find the source code here
-https://github.com/JayTalekar/job-journey
+https://github.com/KrutarthBhavani/Job-Journey/
 
 ## Setup
 
