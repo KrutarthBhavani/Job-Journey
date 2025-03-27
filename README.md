@@ -7,7 +7,7 @@
 
 
 #### Check out this application here
-http://job-journey.us-east-2.elasticbeanstalk.com/
+https://job-journey.netlify.app/
 
 #### Find the source code here
 https://github.com/JayTalekar/job-journey
